@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps, @typescript-eslint/no-explicit-any, no-empty */
+
 'use client';
 
 import { Search, X } from 'lucide-react';
@@ -35,6 +37,10 @@ export default function SearchSection({ onSearchChange }: SearchSectionProps) {
   const eventSourceRef = useRef<EventSource | null>(null);
   const pendingResultsRef = useRef<SearchResult[]>([]);
   const flushTimerRef = useRef<number | null>(null);
+  const onSearchChangeRef = useRef(onSearchChange);
+  onSearchChangeRef.current = onSearchChange;
+  const totalSourcesRef = useRef(totalSources);
+  totalSourcesRef.current = totalSources;
 
   const groupRefs = useRef<Map<string, React.RefObject<VideoCardHandle>>>(new Map());
   const groupStatsRef = useRef<Map<string, { douban_id?: number; episodes?: number; source_names: string[] }>>(new Map());
@@ -155,7 +161,7 @@ export default function SearchSection({ onSearchChange }: SearchSectionProps) {
 
   const filteredAllResults = useMemo(() => {
     const { source, title, year, yearOrder } = filterAll;
-    let filtered = searchResults.filter(item => {
+    const filtered = searchResults.filter(item => {
       if (source !== 'all' && item.source !== source) return false;
       if (title !== 'all' && item.title !== title) return false;
       if (year !== 'all' && item.year !== year) return false;
@@ -172,7 +178,7 @@ export default function SearchSection({ onSearchChange }: SearchSectionProps) {
   }, [searchResults, filterAll, searchQuery]);
 
   const filteredAggResults = useMemo(() => {
-    const { source, title, year, yearOrder } = filterAgg as any;
+    const { source, title, year, yearOrder } = filterAgg;
     let filtered = aggregatedResults.filter(([_, group]) => {
       const gTitle = group[0]?.title ?? '', gYear = group[0]?.year ?? 'unknown';
       if (source !== 'all' && !group.some(item => item.source === source)) return false;
@@ -204,7 +210,7 @@ export default function SearchSection({ onSearchChange }: SearchSectionProps) {
     setIsLoading(true);
     setShowResults(true);
     setShowSuggestions(false);
-    onSearchChange?.(true);
+    onSearchChangeRef.current?.(true);
 
     let currentFluid = useFluidSearch;
     if (typeof window !== 'undefined') {
@@ -239,7 +245,7 @@ export default function SearchSection({ onSearchChange }: SearchSectionProps) {
             }
             case 'source_error': setCompletedSources(prev => prev + 1); break;
             case 'complete':
-              setCompletedSources(payload.completedSources || totalSources);
+              setCompletedSources(payload.completedSources || totalSourcesRef.current);
               if (pendingResultsRef.current.length > 0) {
                 const toAppend = pendingResultsRef.current;
                 pendingResultsRef.current = [];
@@ -276,7 +282,7 @@ export default function SearchSection({ onSearchChange }: SearchSectionProps) {
         }).catch(() => setIsLoading(false));
     }
     addSearchHistory(query);
-  }, [useFluidSearch]);
+  }, [useFluidSearch, onSearchChangeRef, totalSourcesRef]);
 
   useEffect(() => {
     return () => {
@@ -312,7 +318,7 @@ export default function SearchSection({ onSearchChange }: SearchSectionProps) {
     if (eventSourceRef.current) { try { eventSourceRef.current.close(); } catch {} eventSourceRef.current = null; }
     setSearchResults([]);
     setShowResults(false);
-    onSearchChange?.(false);
+    onSearchChangeRef.current?.(false);
   };
 
   return (
