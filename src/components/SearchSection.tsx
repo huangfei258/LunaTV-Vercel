@@ -14,7 +14,7 @@ import {
 } from '@/lib/db.client';
 import { SearchResult } from '@/lib/types';
 
-import SearchResultFilter from '@/components/SearchResultFilter';
+import SearchResultFilter, { SearchFilterCategory } from '@/components/SearchResultFilter';
 import SearchSuggestions from '@/components/SearchSuggestions';
 import VideoCard, { VideoCardHandle } from '@/components/VideoCard';
 import VirtualGrid from '@/components/VirtualGrid';
@@ -156,7 +156,7 @@ export default function SearchSection({ onSearchChange }: SearchSectionProps) {
     const years = Array.from(yearsSet);
     const knownYears = years.filter(y => y !== 'unknown').sort((a, b) => parseInt(b) - parseInt(a));
     const yearOpts = [{ label: '全部年份', value: 'all' }, ...knownYears.map(y => ({ label: y, value: y })), ...(years.includes('unknown') ? [{ label: '未知', value: 'unknown' }] : [])];
-    return { categoriesAll: [{ key: 'source', label: '来源', options: srcOpts }, { key: 'title', label: '标题', options: titleOpts }, { key: 'year', label: '年份', options: yearOpts }], categoriesAgg: [{ key: 'source', label: '来源', options: srcOpts }, { key: 'title', label: '标题', options: titleOpts }, { key: 'year', label: '年份', options: yearOpts }] };
+    return { categoriesAll: [{ key: 'source' as const, label: '来源', options: srcOpts }, { key: 'title' as const, label: '标题', options: titleOpts }, { key: 'year' as const, label: '年份', options: yearOpts }] as SearchFilterCategory[], categoriesAgg: [{ key: 'source' as const, label: '来源', options: srcOpts }, { key: 'title' as const, label: '标题', options: titleOpts }, { key: 'year' as const, label: '年份', options: yearOpts }] as SearchFilterCategory[] };
   }, [searchResults]);
 
   const filteredAllResults = useMemo(() => {
