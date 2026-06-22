@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, no-console, @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-explicit-any, no-console, @typescript-eslint/no-non-null-assertion */
 
 import { db } from '@/lib/db';
 
 import { AdminConfig } from './admin.types';
-
-// 默认视频源配置（首次部署时自动加载）
-const defaultConfig = require('../../config/default-sources.json');
+import { createDefaultConfig } from '@/lib/default-sources';
 
 export interface ApiSite {
   key: string;
@@ -309,7 +307,7 @@ export async function getConfig(): Promise<AdminConfig> {
 
   // db 中无配置，执行一次初始化（使用默认视频源配置）
   if (!adminConfig) {
-    adminConfig = await getInitConfig(JSON.stringify(defaultConfig));
+    adminConfig = createDefaultConfig();
   }
   adminConfig = configSelfCheck(adminConfig);
   cachedConfig = adminConfig;
