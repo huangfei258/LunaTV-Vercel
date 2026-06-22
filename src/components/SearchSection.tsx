@@ -14,7 +14,7 @@ import {
 } from '@/lib/db.client';
 import { SearchResult } from '@/lib/types';
 
-import SearchResultFilter, { SearchFilterCategory } from '@/components/SearchResultFilter';
+import SearchResultFilter from '@/components/SearchResultFilter';
 import SearchSuggestions from '@/components/SearchSuggestions';
 import VideoCard, { VideoCardHandle } from '@/components/VideoCard';
 import VirtualGrid from '@/components/VirtualGrid';
@@ -123,7 +123,7 @@ export default function SearchSection({ onSearchChange }: SearchSectionProps) {
       if (arr.length === 0) keyOrder.push(key);
       arr.push(item); map.set(key, arr);
     });
-    return keyOrder.map(key => [key, map.get(key)!] as [string, SearchResult[]]);
+    return keyOrder.map(key => [key, map.get(key) as SearchResult[]] as [string, SearchResult[]]);
   }, [searchResults]);
 
   useEffect(() => {
@@ -179,7 +179,7 @@ export default function SearchSection({ onSearchChange }: SearchSectionProps) {
 
   const filteredAggResults = useMemo(() => {
     const { source, title, year, yearOrder } = filterAgg;
-    let filtered = aggregatedResults.filter(([_, group]) => {
+    const filtered = aggregatedResults.filter(([_, group]) => {
       const gTitle = group[0]?.title ?? '', gYear = group[0]?.year ?? 'unknown';
       if (source !== 'all' && !group.some(item => item.source === source)) return false;
       if (title !== 'all' && gTitle !== title) return false;
