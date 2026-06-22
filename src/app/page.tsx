@@ -466,6 +466,7 @@ function HomeClient() {
             </>
           )}
         </div>
+      </>
       )}
       </div>
       {announcement && showAnnouncement && (
