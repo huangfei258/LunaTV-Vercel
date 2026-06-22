@@ -1,3 +1,6 @@
+部署到 Vercel 时，需要设置环境变量 NEXT_PUBLIC_STORAGE_TYPE=upstash（推荐）或 localstorage，以及对应的 USERNAME/PASSWORD/UPSTASH_URL/UPSTASH_TOKEN 等。
+
+
 # MoonTV
 
 <div align="center">
